@@ -1,0 +1,31 @@
+version: '3.7'
+services:
+  frontend:
+    image: node:12.16.3-alpine
+    ports:
+      - 4001:8080
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    command: /bin/sh -c "yarn install && yarn serve"
+    depends_on:
+      - backend
+
+  backend:
+    build: backend
+    ports:
+      - 4002:8000
+    volumes:
+      - ./backend:/app
+    environment:
+      AWS_ACCESS_KEY_ID: 'DUMMYIDEXAMPLE'
+      AWS_SECRET_ACCESS_KEY: 'DUMMYEXAMPLEKEY'
+      ENDPOINT_URL: 'http://localhost:8000'
+      TABLE_NAME: 'users'
+    depends_on:
+      - dynamodb
+
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    ports:
+      - "8000:8000"
