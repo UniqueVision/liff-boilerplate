@@ -24,11 +24,12 @@ def index():
         'id_token': request.json_body['idToken'],
         'client_id': CLIENT_ID
     })
+    data = r.json()
 
     # DynamoDBにデータを保存
     dynamodb = get_dynamodb_resource()
     table = dynamodb.Table(os.getenv('TABLE_NAME'))
-    table.put_item(Item=r.json())
+    table.put_item(Item=data)
 
     # レスポンスを作成
     # NOTE: 以下のレスポンスはサンプルです
